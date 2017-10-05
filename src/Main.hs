@@ -46,4 +46,4 @@ routes = do
 main :: IO ()
 main = do
   putStrLn "Starting server ..."
-  scotty 3000 $ routes
+  scotty 8080 $ routes

@@ -1,11 +1,11 @@
-name: sample-project
+name: dswa-cwc-hs
 version: 0.1.0.0
 cabal-version: >=1.10
 build-type: Simple
 license: BSD3
 license-file: LICENSE
 copyright: 2017 Author name here
-maintainer: example@example.com
+maintainer: bijoyjth@gmail.com
 homepage: https://github.com/githubuser/sample-project#readme
 category: Web
 author: Author name here
@@ -13,7 +13,7 @@ extra-source-files:
     README.md
 x-ghc-framework-version: 8.0.2-8.9-3
 x-last-ide-version: HfM1.5.1
-Executable sample-project
+Executable dswa-cwc-hs
   main-is: Main.hs
   buildable: True
   build-depends:
