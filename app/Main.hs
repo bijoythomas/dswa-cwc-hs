@@ -12,8 +12,12 @@ import Data.Aeson (FromJSON, ToJSON)
 import System.Environment (getEnv)
 
 data User = User { userId :: Int, userName :: String } deriving (Show, Generic)
+data LoginResponse = LoginResponse { success :: String } deriving (Show, Generic)
+data LoginRequest = LoginRequest { username :: String, password :: String } deriving (Show, Generic)
 instance ToJSON User
 instance FromJSON User
+instance ToJSON LoginResponse
+instance FromJSON LoginRequest
 
 bob :: User
 bob = User { userId = 1, userName = "bob" }
@@ -44,13 +48,14 @@ routes = do
   get "/users/:id" $ userById
   get "/greet/:name" $ greet
   get "/allusers" $ json allUsers
+  post "/login" $ do
+    request <- jsonData :: ActionM LoginRequest
+    json (LoginResponse {success = if (username request) == (password request) then "success" else "failure"})
 
 main :: IO ()
 main = do
   -- read in environment vars
   port <- getEnv "PORT"
-
-
 
   putStrLn "Starting server ..."
   scotty (read port :: Int) $ do
