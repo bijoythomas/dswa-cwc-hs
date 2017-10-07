@@ -1,3 +1,6 @@
 /bin/*
+/web/node_modules/*
+/web/elm-stuff/*
 .uuid
 .stack-work
+.DS_Store

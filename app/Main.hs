@@ -6,8 +6,10 @@ module Main where
 
 import GHC.Generics
 import Data.Monoid ((<>))
+import Network.Wai.Middleware.Static (staticPolicy, addBase)
 import Web.Scotty
 import Data.Aeson (FromJSON, ToJSON)
+import System.Environment (getEnv)
 
 data User = User { userId :: Int, userName :: String } deriving (Show, Generic)
 instance ToJSON User
@@ -45,5 +47,13 @@ routes = do
 
 main :: IO ()
 main = do
+  -- read in environment vars
+  port <- getEnv "PORT"
+
+
+
   putStrLn "Starting server ..."
-  scotty 8080 $ routes
+  scotty (read port :: Int) $ do
+    -- apply static asset delivery using the provided path
+    middleware $ staticPolicy $ addBase "web/dist"
+    routes
