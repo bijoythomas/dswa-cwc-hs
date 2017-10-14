@@ -14430,12 +14430,17 @@ var _user$project$Login$handleLoginResponse = F2(
 	function (user, result) {
 		var _p0 = result;
 		if (_p0.ctor === 'Ok') {
-			if (_p0._0 === 'success') {
+			if (_p0._0.ctor === '[]') {
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						user,
-						{loggedIn: true, password: '', errorMsg: ''}),
+						{
+							loggedIn: false,
+							churches: {ctor: '[]'},
+							password: '',
+							errorMsg: 'Invalid username/password'
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			} else {
@@ -14443,7 +14448,12 @@ var _user$project$Login$handleLoginResponse = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						user,
-						{loggedIn: false, password: '', errorMsg: 'Invalid username/password'}),
+						{
+							loggedIn: true,
+							churches: {ctor: '::', _0: _p0._0._0, _1: _p0._0._1},
+							password: '',
+							errorMsg: ''
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			}
@@ -14459,7 +14469,6 @@ var _user$project$Login$handleLoginResponse = F2(
 			};
 		}
 	});
-var _user$project$Login$tokenDecoder = A2(_elm_lang$core$Json_Decode$field, 'success', _elm_lang$core$Json_Decode$string);
 var _user$project$Login$userEncoder = function (user) {
 	return _elm_lang$core$Json_Encode$object(
 		{
@@ -14481,18 +14490,34 @@ var _user$project$Login$userEncoder = function (user) {
 		});
 };
 var _user$project$Login$loginUrl = '/login';
+var _user$project$Login$User = F5(
+	function (a, b, c, d, e) {
+		return {username: a, password: b, loggedIn: c, churches: d, errorMsg: e};
+	});
+var _user$project$Login$initialUser = A5(
+	_user$project$Login$User,
+	'',
+	'',
+	false,
+	{ctor: '[]'},
+	'');
+var _user$project$Login$init = {ctor: '_Tuple2', _0: _user$project$Login$initialUser, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Login$Church = F2(
+	function (a, b) {
+		return {venue: a, church: b};
+	});
+var _user$project$Login$churchDecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Login$Church,
+	A2(_elm_lang$core$Json_Decode$field, 'venue', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'church', _elm_lang$core$Json_Decode$string));
+var _user$project$Login$churchListDecoder = _elm_lang$core$Json_Decode$list(_user$project$Login$churchDecoder);
 var _user$project$Login$authUser = F2(
 	function (user, apiUrl) {
 		var body = _elm_lang$http$Http$jsonBody(
 			_user$project$Login$userEncoder(user));
-		return A3(_elm_lang$http$Http$post, _user$project$Login$loginUrl, body, _user$project$Login$tokenDecoder);
+		return A3(_elm_lang$http$Http$post, _user$project$Login$loginUrl, body, _user$project$Login$churchListDecoder);
 	});
-var _user$project$Login$User = F4(
-	function (a, b, c, d) {
-		return {username: a, password: b, loggedIn: c, errorMsg: d};
-	});
-var _user$project$Login$initialUser = A4(_user$project$Login$User, '', '', false, '');
-var _user$project$Login$init = {ctor: '_Tuple2', _0: _user$project$Login$initialUser, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Login$HandleLoginResponse = function (a) {
 	return {ctor: 'HandleLoginResponse', _0: a};
 };
@@ -14566,7 +14591,12 @@ var _user$project$Login$view = function (user) {
 			},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text('Logout'),
+				_0: _elm_lang$html$Html$text(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'Logout',
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$List$length(user.churches)))),
 				_1: {ctor: '[]'}
 			}),
 		_1: {ctor: '[]'}

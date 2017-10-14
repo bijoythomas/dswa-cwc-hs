@@ -13,6 +13,7 @@ type alias User =
     { username : String
     , password : String
     , loggedIn : Bool
+    , churches : List Church
     , errorMsg : String
     }
 
@@ -21,9 +22,31 @@ type alias Model =
     User
 
 
+type alias Church =
+    { venue : Int
+    , church : String
+    }
+
+
+churchDecoder : Decoder Church
+churchDecoder =
+    Decode.map2 Church
+        (field "venue" Decode.int)
+        (field "church" Decode.string)
+
+
+
+--(field "region" Decode.string)
+
+
+churchListDecoder : Decoder (List Church)
+churchListDecoder =
+    Decode.list churchDecoder
+
+
 initialUser : User
 initialUser =
-    User "" "" False ""
+    User "" "" False [] ""
 
 
 init : ( User, Cmd Msg )
@@ -36,7 +59,7 @@ type Msg
     | Password String
     | Login
     | LogOut
-    | HandleLoginResponse (Result Http.Error String)
+    | HandleLoginResponse (Result Http.Error (List Church))
 
 
 view : User -> Html Msg
@@ -53,7 +76,7 @@ view user =
         -- If the user is logged in, show a greeting; else show login form
         content =
             if user.loggedIn then
-                [ button [ buttonStyle, onClick LogOut ] [ text "Logout" ] ]
+                [ button [ buttonStyle, onClick LogOut ] [ text ("Logout" ++ toString (List.length user.churches)) ] ]
             else
                 [ div [ class showError ] [ text user.errorMsg ]
                 , Html.form [ formStyle, onSubmit Login ]
@@ -79,25 +102,20 @@ userEncoder user =
         ]
 
 
-tokenDecoder : Decoder String
-tokenDecoder =
-    Decode.field "success" Decode.string
-
-
-handleLoginResponse : User -> Result Http.Error String -> ( User, Cmd Msg )
+handleLoginResponse : User -> Result Http.Error (List Church) -> ( User, Cmd Msg )
 handleLoginResponse user result =
     case result of
-        Ok "success" ->
-            ( { user | loggedIn = True, password = "", errorMsg = "" }, Cmd.none )
+        Ok [] ->
+            ( { user | loggedIn = False, churches = [], password = "", errorMsg = "Invalid username/password" }, Cmd.none )
 
-        Ok _ ->
-            ( { user | loggedIn = False, password = "", errorMsg = "Invalid username/password" }, Cmd.none )
+        Ok (x :: xs) ->
+            ( { user | loggedIn = True, churches = x :: xs, password = "", errorMsg = "" }, Cmd.none )
 
         Err error ->
             ( { user | errorMsg = (toString error) }, Cmd.none )
 
 
-authUser : User -> String -> Http.Request String
+authUser : User -> String -> Http.Request (List Church)
 authUser user apiUrl =
     let
         body =
@@ -105,7 +123,7 @@ authUser user apiUrl =
                 |> userEncoder
                 |> Http.jsonBody
     in
-        Http.post loginUrl body tokenDecoder
+        Http.post loginUrl body churchListDecoder
 
 
 authUserCmd : User -> String -> Cmd Msg

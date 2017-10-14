@@ -8,57 +8,44 @@ import GHC.Generics
 import Data.Monoid ((<>))
 import Network.Wai.Middleware.Static (staticPolicy, addBase)
 import Web.Scotty
-import Data.Aeson (FromJSON, ToJSON)
+import Data.Aeson (FromJSON, ToJSON, encode)
 import System.Environment (getEnv)
+import Database.MongoDB    (Action, Document, Value, Query, Pipe, Projector, access,
+                            close, connect, delete, exclude, find,
+                            host, insertMany, master, project, rest,
+                            select, sort, (=:))
+import Control.Monad.Trans (liftIO)
+import Control.Applicative
+import qualified Data.Text.Lazy as T
+import Data.List.Split (splitOn)
+import AesonBson
 
-data User = User { userId :: Int, userName :: String } deriving (Show, Generic)
-data LoginResponse = LoginResponse { success :: String } deriving (Show, Generic)
 data LoginRequest = LoginRequest { username :: String, password :: String } deriving (Show, Generic)
-instance ToJSON User
-instance FromJSON User
-instance ToJSON LoginResponse
 instance FromJSON LoginRequest
 
-bob :: User
-bob = User { userId = 1, userName = "bob" }
+runQuery :: Pipe -> Query -> IO [Document]
+runQuery pipe query = access pipe master "dswacwc" (find query >>= rest)
 
-jenny :: User
-jenny = User { userId = 2, userName = "jenny" }
-
-allUsers :: [User]
-allUsers = [bob, jenny]
-
-hello :: ActionM ()
-hello = text "hello world"
-
-users :: ActionM ()
-users = text "users world"
-
-greet = do
-  name <- param "name"
-  text ("hello " <> name <> " !")
-
-userById = do
-  id <- param "id"
-  json $ filter (\user -> userId user == id) allUsers
-
-routes :: ScottyM ()
-routes = do
-  get "/hello" $ hello
-  get "/users/:id" $ userById
-  get "/greet/:name" $ greet
-  get "/allusers" $ json allUsers
+routes pipe = do
   post "/login" $ do
     request <- jsonData :: ActionM LoginRequest
-    json (LoginResponse {success = if (username request) == (password request) then "success" else "failure"})
+    doc <- liftIO $ runQuery pipe (select ["username" =: (username request), "password" =: (password request)] "users")
+    case doc of
+      [] -> json $ map aesonify []
+      _ -> do
+        churchdocs <- liftIO $ runQuery pipe (select ["region" =: (head $ reverse $ splitOn "_" (username request))] "churches")
+        json $ map aesonify churchdocs
+
 
 main :: IO ()
 main = do
   -- read in environment vars
   port <- getEnv "PORT"
 
+  pipe <- connect (host "127.0.0.1")
+
   putStrLn "Starting server ..."
   scotty (read port :: Int) $ do
     -- apply static asset delivery using the provided path
     middleware $ staticPolicy $ addBase "web/dist"
-    routes
+    routes pipe
