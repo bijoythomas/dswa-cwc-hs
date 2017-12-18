@@ -16,13 +16,23 @@ headerStyle =
         [ paddingLeft (cm 3) ]
 
 
-formStyle : Attribute msg
-formStyle =
+loginFormStyle : Attribute msg
+loginFormStyle =
     styles
         [ borderRadius (px 5)
         , backgroundColor (hex "#f2f2f2")
         , padding (px 20)
         , width (px 300)
+        ]
+
+
+registrationFormStyle : Attribute msg
+registrationFormStyle =
+    styles
+        [ borderRadius (px 5)
+        , backgroundColor (hex "#f2f2f2")
+        , padding (px 20)
+        , width (px 600)
         ]
 
 

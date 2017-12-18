@@ -13436,7 +13436,7 @@ var _user$project$LoginStyle$headerStyle = _user$project$LoginStyle$styles(
 			_rtfeldman$elm_css$Css$cm(3)),
 		_1: {ctor: '[]'}
 	});
-var _user$project$LoginStyle$formStyle = _user$project$LoginStyle$styles(
+var _user$project$LoginStyle$loginFormStyle = _user$project$LoginStyle$styles(
 	{
 		ctor: '::',
 		_0: _rtfeldman$elm_css$Css$borderRadius(
@@ -13453,6 +13453,28 @@ var _user$project$LoginStyle$formStyle = _user$project$LoginStyle$styles(
 					ctor: '::',
 					_0: _rtfeldman$elm_css$Css$width(
 						_rtfeldman$elm_css$Css$px(300)),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _user$project$LoginStyle$registrationFormStyle = _user$project$LoginStyle$styles(
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$borderRadius(
+			_rtfeldman$elm_css$Css$px(5)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$backgroundColor(
+				_rtfeldman$elm_css$Css$hex('#f2f2f2')),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$padding(
+					_rtfeldman$elm_css$Css$px(20)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$width(
+						_rtfeldman$elm_css$Css$px(600)),
 					_1: {ctor: '[]'}
 				}
 			}

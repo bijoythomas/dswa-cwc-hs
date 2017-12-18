@@ -62,6 +62,48 @@ type Msg
     | HandleLoginResponse (Result Http.Error (List Church))
 
 
+churchMenu church =
+    option
+        [ Html.Attributes.value (toString church.church) ]
+        [ text (toString church.church) ]
+
+
+churchesMenu : List Church -> List (Html msg)
+churchesMenu list =
+    List.map
+        (\church ->
+            option
+                [ Html.Attributes.value church.church ]
+                [ text church.church ]
+        )
+        list
+
+
+listToMenu : List (List String) -> List (Html msg)
+listToMenu list =
+    let
+        toSelectOption : List String -> List (Html msg) -> List (Html msg)
+        toSelectOption xs acc =
+            case xs of
+                b :: bs ->
+                    (option [ Html.Attributes.value b ] [ text b ]) :: acc
+
+                _ ->
+                    acc
+    in
+        List.foldr toSelectOption [] list
+
+
+categoiesMenu =
+    listToMenu
+        [ [ "Bible Quiz", "BQ" ]
+        , [ "Story", "ST" ]
+        , [ "Poetry", "PE" ]
+        , [ "Drawing", "DR" ]
+        , [ "Essay", "ES" ]
+        ]
+
+
 view : User -> Html Msg
 view user =
     let
@@ -76,10 +118,26 @@ view user =
         -- If the user is logged in, show a greeting; else show login form
         content =
             if user.loggedIn then
-                [ button [ buttonStyle, onClick LogOut ] [ text ("Logout" ++ toString (List.length user.churches)) ] ]
+                [ Html.form [ registrationFormStyle ]
+                    [ label [ for "firsname" ] [ text "First Name:" ]
+                    , input [ type_ "text", name "firsname", required True ] []
+                    , br [] []
+                    , label [ for "middlename" ] [ text "Middle Name:" ]
+                    , input [ type_ "text", name "middlename", required True ] []
+                    , br [] []
+                    , label [ for "lastname" ] [ text "Last Name:" ]
+                    , input [ type_ "text", name "lastname", required True ] []
+                    , br [] []
+                    , label [ for "church" ] [ text "Church:" ]
+                    , select [ name "church" ] (churchesMenu user.churches)
+                    , br [] []
+                    , label [ for "category" ] [ text "Category:" ]
+                    , select [ name "category" ] categoiesMenu
+                    ]
+                ]
             else
                 [ div [ class showError ] [ text user.errorMsg ]
-                , Html.form [ formStyle, onSubmit Login ]
+                , Html.form [ loginFormStyle, onSubmit Login ]
                     [ div [] [ text "Username", input [ id "username", type_ "text", inputTextStyle, onInput Username ] [] ]
                     , div [] [ text "Password", input [ id "password", type_ "password", inputTextStyle, onInput Password ] [] ]
                     , div [] [ button [ buttonStyle ] [ text "Login" ] ]

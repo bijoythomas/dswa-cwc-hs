@@ -14324,7 +14324,7 @@ var _user$project$LoginStyle$headerStyle = _user$project$LoginStyle$styles(
 			_rtfeldman$elm_css$Css$cm(3)),
 		_1: {ctor: '[]'}
 	});
-var _user$project$LoginStyle$formStyle = _user$project$LoginStyle$styles(
+var _user$project$LoginStyle$loginFormStyle = _user$project$LoginStyle$styles(
 	{
 		ctor: '::',
 		_0: _rtfeldman$elm_css$Css$borderRadius(
@@ -14341,6 +14341,28 @@ var _user$project$LoginStyle$formStyle = _user$project$LoginStyle$styles(
 					ctor: '::',
 					_0: _rtfeldman$elm_css$Css$width(
 						_rtfeldman$elm_css$Css$px(300)),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _user$project$LoginStyle$registrationFormStyle = _user$project$LoginStyle$styles(
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$borderRadius(
+			_rtfeldman$elm_css$Css$px(5)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$backgroundColor(
+				_rtfeldman$elm_css$Css$hex('#f2f2f2')),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$padding(
+					_rtfeldman$elm_css$Css$px(20)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$width(
+						_rtfeldman$elm_css$Css$px(600)),
 					_1: {ctor: '[]'}
 				}
 			}
@@ -14490,6 +14512,135 @@ var _user$project$Login$userEncoder = function (user) {
 		});
 };
 var _user$project$Login$loginUrl = '/login';
+var _user$project$Login$listToMenu = function (list) {
+	var toSelectOption = F2(
+		function (xs, acc) {
+			var _p1 = xs;
+			if (_p1.ctor === '::') {
+				var _p2 = _p1._0;
+				return {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$option,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$value(_p2),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(_p2),
+							_1: {ctor: '[]'}
+						}),
+					_1: acc
+				};
+			} else {
+				return acc;
+			}
+		});
+	return A3(
+		_elm_lang$core$List$foldr,
+		toSelectOption,
+		{ctor: '[]'},
+		list);
+};
+var _user$project$Login$categoiesMenu = _user$project$Login$listToMenu(
+	{
+		ctor: '::',
+		_0: {
+			ctor: '::',
+			_0: 'Bible Quiz',
+			_1: {
+				ctor: '::',
+				_0: 'BQ',
+				_1: {ctor: '[]'}
+			}
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '::',
+				_0: 'Story',
+				_1: {
+					ctor: '::',
+					_0: 'ST',
+					_1: {ctor: '[]'}
+				}
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '::',
+					_0: 'Poetry',
+					_1: {
+						ctor: '::',
+						_0: 'PE',
+						_1: {ctor: '[]'}
+					}
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '::',
+						_0: 'Drawing',
+						_1: {
+							ctor: '::',
+							_0: 'DR',
+							_1: {ctor: '[]'}
+						}
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '::',
+							_0: 'Essay',
+							_1: {
+								ctor: '::',
+								_0: 'ES',
+								_1: {ctor: '[]'}
+							}
+						},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	});
+var _user$project$Login$churchesMenu = function (list) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (church) {
+			return A2(
+				_elm_lang$html$Html$option,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$value(church.church),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(church.church),
+					_1: {ctor: '[]'}
+				});
+		},
+		list);
+};
+var _user$project$Login$churchMenu = function (church) {
+	return A2(
+		_elm_lang$html$Html$option,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$value(
+				_elm_lang$core$Basics$toString(church.church)),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				_elm_lang$core$Basics$toString(church.church)),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$Login$User = F5(
 	function (a, b, c, d, e) {
 		return {username: a, password: b, loggedIn: c, churches: d, errorMsg: e};
@@ -14530,14 +14681,14 @@ var _user$project$Login$authUserCmd = F2(
 	});
 var _user$project$Login$update = F2(
 	function (message, user) {
-		var _p1 = message;
-		switch (_p1.ctor) {
+		var _p3 = message;
+		switch (_p3.ctor) {
 			case 'Username':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						user,
-						{username: _p1._0}),
+						{username: _p3._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Password':
@@ -14545,7 +14696,7 @@ var _user$project$Login$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						user,
-						{password: _p1._0}),
+						{password: _p3._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Login':
@@ -14563,7 +14714,7 @@ var _user$project$Login$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
-				return A2(_user$project$Login$handleLoginResponse, user, _p1._0);
+				return A2(_user$project$Login$handleLoginResponse, user, _p3._0);
 		}
 	});
 var _user$project$Login$LogOut = {ctor: 'LogOut'};
@@ -14579,25 +14730,194 @@ var _user$project$Login$view = function (user) {
 	var content = user.loggedIn ? {
 		ctor: '::',
 		_0: A2(
-			_elm_lang$html$Html$button,
+			_elm_lang$html$Html$form,
 			{
 				ctor: '::',
-				_0: _user$project$LoginStyle$buttonStyle,
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Events$onClick(_user$project$Login$LogOut),
-					_1: {ctor: '[]'}
-				}
+				_0: _user$project$LoginStyle$registrationFormStyle,
+				_1: {ctor: '[]'}
 			},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'Logout',
-						_elm_lang$core$Basics$toString(
-							_elm_lang$core$List$length(user.churches)))),
-				_1: {ctor: '[]'}
+				_0: A2(
+					_elm_lang$html$Html$label,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$for('firsname'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('First Name:'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$type_('text'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$name('firsname'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$required(true),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$for('middlename'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Middle Name:'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$input,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$type_('text'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$name('middlename'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$required(true),
+												_1: {ctor: '[]'}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$br,
+										{ctor: '[]'},
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$for('lastname'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Last Name:'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$input,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$type_('text'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$name('lastname'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$required(true),
+															_1: {ctor: '[]'}
+														}
+													}
+												},
+												{ctor: '[]'}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$br,
+													{ctor: '[]'},
+													{ctor: '[]'}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$label,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$for('church'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Church:'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$select,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$name('church'),
+																_1: {ctor: '[]'}
+															},
+															_user$project$Login$churchesMenu(user.churches)),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$br,
+																{ctor: '[]'},
+																{ctor: '[]'}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$label,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$for('category'),
+																		_1: {ctor: '[]'}
+																	},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('Category:'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$select,
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$name('category'),
+																			_1: {ctor: '[]'}
+																		},
+																		_user$project$Login$categoiesMenu),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}),
 		_1: {ctor: '[]'}
 	} : {
@@ -14620,7 +14940,7 @@ var _user$project$Login$view = function (user) {
 				_elm_lang$html$Html$form,
 				{
 					ctor: '::',
-					_0: _user$project$LoginStyle$formStyle,
+					_0: _user$project$LoginStyle$loginFormStyle,
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$html$Html_Events$onSubmit(_user$project$Login$Login),
@@ -14730,7 +15050,7 @@ var _user$project$Login$main = _elm_lang$html$Html$program(
 	{
 		init: _user$project$Login$init,
 		update: _user$project$Login$update,
-		subscriptions: function (_p2) {
+		subscriptions: function (_p4) {
 			return _elm_lang$core$Platform_Sub$none;
 		},
 		view: _user$project$Login$view
